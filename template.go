@@ -7,12 +7,20 @@ import (
 )
 
 func onestar(filename string) string {
+	lines := aocutils.Readfile(filename)
 	result := ""
+	for _, line := range lines {
+		fmt.Println(line)
+	}
 	return result
 }
 
 func twostar(filename string) string {
+	lines := aocutils.Readfile(filename)
 	result := ""
+	for _, line := range lines {
+		fmt.Println(line)
+	}
 	return result
 }
 
