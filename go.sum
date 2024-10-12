@@ -4,3 +4,5 @@ github.com/GauravB159/aoc-go-utils v1.0.1 h1:HwcgpCzjL7YHVhHA1woC32yqWm0WXeavLbP
 github.com/GauravB159/aoc-go-utils v1.0.1/go.mod h1:THvr7noT6GSOHJHAG2yGN++tlBYV77dTtfYXTQB5vmY=
 github.com/GauravB159/aoc-go-utils v1.0.3 h1:stf/fflFs8TvEExaLdtt99Vz8ab5YAGZUe14nqKtpF8=
 github.com/GauravB159/aoc-go-utils v1.0.3/go.mod h1:THvr7noT6GSOHJHAG2yGN++tlBYV77dTtfYXTQB5vmY=
+golang.org/x/exp v0.0.0-20241009180824-f66d83c29e7c h1:7dEasQXItcW1xKJ2+gg5VOiBnqWrJc+rq0DPKyvvdbY=
+golang.org/x/exp v0.0.0-20241009180824-f66d83c29e7c/go.mod h1:NQtJDoLvd6faHhE7m4T/1IY708gDefGGjR/iUW8yQQ8=
