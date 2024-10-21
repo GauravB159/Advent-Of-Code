@@ -3,10 +3,7 @@ package main
 import (
 	"fmt"
 	"image"
-	"image/color"
-	"image/png"
 
-	"os"
 	"sort"
 	"strconv"
 
@@ -23,10 +20,8 @@ func onestar(filename string) string {
 	rows := len(lines)
 	cols := len(lines[0])
 	grid := make(map[Key]int, rows*cols)
-
-	zoom := 10
-	grid_image := image.NewRGBA(image.Rect(0, 0, cols*zoom, rows*zoom))
-	outputFile, _ := os.Create("onestar.png")
+	grid_image := aocutils.NewImage(rows, cols, 10)
+	grid_image.UsePaletteReds()
 
 	for row, line := range lines {
 		for col, char := range line {
@@ -38,13 +33,7 @@ func onestar(filename string) string {
 	for i, line := range lines {
 		for j := range line {
 			grid_value := grid[Key{row: i, col: j}]
-			for k := i * zoom; k < (i+1)*zoom; k++ {
-				for l := j * zoom; l < (j+1)*zoom; l++ {
-					location := (k*cols*zoom + l) * 4
-					grid_image.Pix[location] = 60 + uint8(175*(float64(10-grid[Key{row: i, col: j}])/10))
-					grid_image.Pix[location+3] = 255
-				}
-			}
+			grid_image.SetZoomedPixel(i, j, grid_value)
 			if value, exists := grid[Key{row: i + 1, col: j}]; exists && value <= grid_value {
 				continue
 			} else if value, exists := grid[Key{row: i - 1, col: j}]; exists && value <= grid_value {
@@ -54,11 +43,10 @@ func onestar(filename string) string {
 			} else if value, exists := grid[Key{row: i, col: j - 1}]; exists && value <= grid_value {
 				continue
 			}
-			result += grid[Key{row: i, col: j}]
+			result += grid_value
 		}
 	}
-	png.Encode(outputFile, grid_image)
-	outputFile.Close()
+	grid_image.WritePNGToFile("onestar")
 	return strconv.Itoa(result)
 }
 
@@ -69,25 +57,19 @@ func twostar(filename string) string {
 	grid := make(map[Key]int, rows*cols)
 	image_grid := make(map[Key]int, rows*cols)
 
-	zoom := 10
 	visited := make(map[Key]bool, len(lines)*len(lines[0]))
 
 	var images []*image.Paletted
 
-	palette := make([]color.Color, 0, 11)
-	palette = append(palette, color.Black)
-	for i := 0; i <= 9; i++ {
-		palette = append(palette, color.RGBA{R: 60 + uint8(195*(float64(10-i)/10)), G: 0, B: 0, A: 255})
-	}
-	palette = append(palette, color.Transparent)
-	grid_image := image.NewPaletted(image.Rect(0, 0, cols*zoom, rows*zoom), palette)
+	grid_image := aocutils.NewImage(rows, cols, 10)
+	grid_image.UsePaletteReds()
 
 	var stack aocutils.Stack[Key]
 	for i, line := range lines {
 		for j, char := range line {
 			value, _ := strconv.Atoi(string(char))
 			key := Key{row: i, col: j}
-			aocutils.SetZoomedPixel(j, i, zoom, grid_image, 0)
+			grid_image.SetZoomedPixel(j, i, 0)
 			grid[key] = value
 			image_grid[key] = 0
 			visited[key] = false
@@ -114,11 +96,10 @@ func twostar(filename string) string {
 					continue
 				}
 				pixel_count += 1
-				aocutils.SetZoomedPixel(location.col, location.row, zoom, grid_image, grid[location])
+				grid_image.SetZoomedPixel(location.col, location.row, grid[location])
 				if pixel_count%frameskip == 0 {
-					copied_image := image.NewPaletted(grid_image.Rect, grid_image.Palette)
-					copy(copied_image.Pix, grid_image.Pix)
-					images = append(images, copied_image)
+					copy := grid_image.Clone()
+					images = append(images, copy.GetRawImage())
 				}
 				count += 1
 				new_location := Key{row: location.row + 1, col: location.col}
@@ -141,7 +122,7 @@ func twostar(filename string) string {
 			basinSize = append(basinSize, count)
 		}
 	}
-	aocutils.CreateGIF(images, palette, "twostar")
+	aocutils.CreateGIF(images, "twostar")
 	sort.Ints(basinSize)
 	top_3 := basinSize[len(basinSize)-3:]
 	return strconv.Itoa(top_3[0] * top_3[1] * top_3[2])
