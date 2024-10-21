@@ -18,6 +18,8 @@ github.com/GauravB159/aoc-go-utils v1.0.3 h1:stf/fflFs8TvEExaLdtt99Vz8ab5YAGZUe1
 github.com/GauravB159/aoc-go-utils v1.0.3/go.mod h1:THvr7noT6GSOHJHAG2yGN++tlBYV77dTtfYXTQB5vmY=
 github.com/GauravB159/aoc-go-utils v1.0.6 h1:x0KOc6VuKzAwd0BbQKoUdjHm054AZe/8ZHjXbBaqqPA=
 github.com/GauravB159/aoc-go-utils v1.0.6/go.mod h1:THvr7noT6GSOHJHAG2yGN++tlBYV77dTtfYXTQB5vmY=
+github.com/GauravB159/aoc-go-utils v1.0.7 h1:by3tCEiANBdICmjyu4mDg0upr4rT2pyyxxTH5qLr6jA=
+github.com/GauravB159/aoc-go-utils v1.0.7/go.mod h1:THvr7noT6GSOHJHAG2yGN++tlBYV77dTtfYXTQB5vmY=
 github.com/ajstarks/deck v0.0.0-20200831202436-30c9fc6549a9/go.mod h1:JynElWSGnm/4RlzPXRlREEwqTHAN3T56Bv2ITsFT3gY=
 github.com/ajstarks/deck/generate v0.0.0-20210309230005-c3f852c02e19/go.mod h1:T13YZdzov6OU0A1+RfKZiZN9ca6VeKdBdyDV+BY97Tk=
 github.com/ajstarks/svgo v0.0.0-20211024235047-1546f124cd8b h1:slYM766cy2nI3BwyRiyQj/Ud48djTMtMebDqepE95rw=

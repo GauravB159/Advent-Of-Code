@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"image"
 	"image/color"
-	"image/draw"
-	"image/gif"
 	"image/png"
 
 	"os"
@@ -72,11 +70,9 @@ func twostar(filename string) string {
 	image_grid := make(map[Key]int, rows*cols)
 
 	zoom := 10
-	grid_image := image.NewRGBA(image.Rect(0, 0, cols*zoom, rows*zoom))
 	visited := make(map[Key]bool, len(lines)*len(lines[0]))
 
 	var images []*image.Paletted
-	var delays []int
 
 	palette := make([]color.Color, 0, 11)
 	palette = append(palette, color.Black)
@@ -84,18 +80,14 @@ func twostar(filename string) string {
 		palette = append(palette, color.RGBA{R: 60 + uint8(195*(float64(10-i)/10)), G: 0, B: 0, A: 255})
 	}
 	palette = append(palette, color.Transparent)
+	grid_image := image.NewPaletted(image.Rect(0, 0, cols*zoom, rows*zoom), palette)
+
 	var stack aocutils.Stack[Key]
 	for i, line := range lines {
 		for j, char := range line {
 			value, _ := strconv.Atoi(string(char))
 			key := Key{row: i, col: j}
-			for k := i * zoom; k < (i+1)*zoom; k++ {
-				for l := j * zoom; l < (j+1)*zoom; l++ {
-					pixel := (k*cols*zoom + l) * 4
-					grid_image.Pix[pixel] = 0
-					grid_image.Pix[pixel+3] = 255
-				}
-			}
+			aocutils.SetZoomedPixel(j, i, zoom, grid_image, 0)
 			grid[key] = value
 			image_grid[key] = 0
 			visited[key] = false
@@ -122,20 +114,12 @@ func twostar(filename string) string {
 					continue
 				}
 				pixel_count += 1
-				for k := location.row * zoom; k < (location.row+1)*zoom; k++ {
-					for l := location.col * zoom; l < (location.col+1)*zoom; l++ {
-						pixel := (k*cols*zoom + l) * 4
-						grid_image.Pix[pixel] = 60 + uint8(195*(float64(10-grid[location])/10))
-						grid_image.Pix[pixel+3] = 255
-					}
-				}
+				aocutils.SetZoomedPixel(location.col, location.row, zoom, grid_image, grid[location])
 				if pixel_count%frameskip == 0 {
-					palettedImage := image.NewPaletted(grid_image.Bounds(), palette)
-					draw.FloydSteinberg.Draw(palettedImage, grid_image.Bounds(), grid_image, image.Point{})
-					images = append(images, palettedImage)
-					delays = append(delays, 1)
+					copied_image := image.NewPaletted(grid_image.Rect, grid_image.Palette)
+					copy(copied_image.Pix, grid_image.Pix)
+					images = append(images, copied_image)
 				}
-
 				count += 1
 				new_location := Key{row: location.row + 1, col: location.col}
 				if value, exists := grid[new_location]; exists && value != 9 {
@@ -157,24 +141,7 @@ func twostar(filename string) string {
 			basinSize = append(basinSize, count)
 		}
 	}
-	lastFrame := images[len(images)-1]
-	for i := 0; i < 20; i++ {
-		images = append(images, lastFrame)
-		delays = append(delays, 100)
-	}
-	gifFile, err := os.Create("twostar.gif")
-	if err != nil {
-		panic(err)
-	}
-	defer gifFile.Close()
-
-	err = gif.EncodeAll(gifFile, &gif.GIF{
-		Image: images,
-		Delay: delays,
-	})
-	if err != nil {
-		panic(err)
-	}
+	aocutils.CreateGIF(images, palette, "twostar")
 	sort.Ints(basinSize)
 	top_3 := basinSize[len(basinSize)-3:]
 	return strconv.Itoa(top_3[0] * top_3[1] * top_3[2])
