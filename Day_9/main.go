@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"image"
 
 	"sort"
 	"strconv"
@@ -10,43 +9,30 @@ import (
 	aocutils "github.com/GauravB159/aoc-go-utils"
 )
 
-type Key struct {
-	row int
-	col int
-}
-
 func onestar(filename string) string {
 	lines := aocutils.Readfile(filename)
-	rows := len(lines)
-	cols := len(lines[0])
-	grid := make(map[Key]int, rows*cols)
-	grid_image := aocutils.NewImage(rows, cols, 10)
-	grid_image.UsePaletteReds()
+	grid := aocutils.CreateGrid(lines)
+	grid_image := aocutils.CreateImage(grid.GetNumRows(), grid.GetNumCols(), 10, "onestar")
+	grid_image.UsePaletteWideReds()
 
-	for row, line := range lines {
-		for col, char := range line {
-			value, _ := strconv.Atoi(string(char))
-			grid[Key{row: row, col: col}] = value + 1
-		}
-	}
 	result := 0
 	for i, line := range lines {
 		for j := range line {
-			grid_value := grid[Key{row: i, col: j}]
+			grid_value, _ := grid.GetValue(i, j)
 			grid_image.SetZoomedPixel(i, j, grid_value)
-			if value, exists := grid[Key{row: i + 1, col: j}]; exists && value <= grid_value {
+			if value, exists := grid.GetValue(i+1, j); exists && value <= grid_value {
 				continue
-			} else if value, exists := grid[Key{row: i - 1, col: j}]; exists && value <= grid_value {
+			} else if value, exists := grid.GetValue(i-1, j); exists && value <= grid_value {
 				continue
-			} else if value, exists := grid[Key{row: i, col: j + 1}]; exists && value <= grid_value {
+			} else if value, exists := grid.GetValue(i, j+1); exists && value <= grid_value {
 				continue
-			} else if value, exists := grid[Key{row: i, col: j - 1}]; exists && value <= grid_value {
+			} else if value, exists := grid.GetValue(i, j-1); exists && value <= grid_value {
 				continue
 			}
 			result += grid_value
 		}
 	}
-	grid_image.WritePNGToFile("onestar")
+	grid_image.WritePNGToFile()
 	return strconv.Itoa(result)
 }
 
@@ -54,75 +40,65 @@ func twostar(filename string) string {
 	lines := aocutils.Readfile(filename)
 	rows := len(lines)
 	cols := len(lines[0])
-	grid := make(map[Key]int, rows*cols)
-	image_grid := make(map[Key]int, rows*cols)
+	grid := aocutils.CreateGrid(lines)
+	image_grid := aocutils.CreateGrid(lines)
+	visited := aocutils.CreateGrid(lines)
 
-	visited := make(map[Key]bool, len(lines)*len(lines[0]))
-
-	var images []*image.Paletted
-
-	grid_image := aocutils.NewImage(rows, cols, 10)
+	grid_image := aocutils.CreateImage(rows, cols, 10, "twostar")
 	grid_image.UsePaletteReds()
-
-	var stack aocutils.Stack[Key]
+	gif := aocutils.CreateGIF("twostar", 10)
+	var stack aocutils.Stack[aocutils.Key]
 	for i, line := range lines {
 		for j, char := range line {
 			value, _ := strconv.Atoi(string(char))
-			key := Key{row: i, col: j}
 			grid_image.SetZoomedPixel(j, i, 0)
-			grid[key] = value
-			image_grid[key] = 0
-			visited[key] = false
+			grid.SetValue(i, j, value)
+			image_grid.SetValue(i, j, 0)
+			visited.SetValue(i, j, 0)
 		}
 	}
 	basinSize := make([]int, 10)
-	pixel_count := 0
-	frameskip := 50
 	for i, line := range lines {
 		for j := range line {
-			key := Key{row: i, col: j}
-			if visited[key] {
+			key := aocutils.Key{Row: i, Col: j}
+			if value, _ := visited.GetValue(i, j); value == 1 {
 				continue
 			}
 			stack.Push(key)
 			count := 0
 			for !stack.IsEmpty() {
 				location, _ := stack.Pop()
-				if visited[location] {
+				if visited.Data[location] == 1 {
 					continue
 				}
-				visited[location] = true
-				if grid[location] == 9 {
+				visited.Data[location] = 1
+				if grid.Data[location] == 9 {
 					continue
 				}
-				pixel_count += 1
-				grid_image.SetZoomedPixel(location.col, location.row, grid[location])
-				if pixel_count%frameskip == 0 {
-					copy := grid_image.Clone()
-					images = append(images, copy.GetRawImage())
-				}
+				gif.AddFrame(grid_image)
+				grid_image.SetZoomedPixel(location.Col, location.Row, grid.Data[location])
 				count += 1
-				new_location := Key{row: location.row + 1, col: location.col}
-				if value, exists := grid[new_location]; exists && value != 9 {
+				new_location := aocutils.Key{Row: location.Row + 1, Col: location.Col}
+				if value, exists := grid.Data[new_location]; exists && value != 9 {
 					stack.Push(new_location)
 				}
-				new_location = Key{row: location.row - 1, col: location.col}
-				if value, exists := grid[new_location]; exists && value != 9 {
+				new_location = aocutils.Key{Row: location.Row - 1, Col: location.Col}
+				if value, exists := grid.Data[new_location]; exists && value != 9 {
 					stack.Push(new_location)
 				}
-				new_location = Key{row: location.row, col: location.col + 1}
-				if value, exists := grid[new_location]; exists && value != 9 {
+				new_location = aocutils.Key{Row: location.Row, Col: location.Col + 1}
+				if value, exists := grid.Data[new_location]; exists && value != 9 {
 					stack.Push(new_location)
 				}
-				new_location = Key{row: location.row, col: location.col - 1}
-				if value, exists := grid[new_location]; exists && value != 9 {
+				new_location = aocutils.Key{Row: location.Row, Col: location.Col - 1}
+				if value, exists := grid.Data[new_location]; exists && value != 9 {
 					stack.Push(new_location)
 				}
 			}
 			basinSize = append(basinSize, count)
 		}
 	}
-	aocutils.CreateGIF(images, "twostar")
+	gif.WriteGIFToFile()
 	sort.Ints(basinSize)
 	top_3 := basinSize[len(basinSize)-3:]
 	return strconv.Itoa(top_3[0] * top_3[1] * top_3[2])
