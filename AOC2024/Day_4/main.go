@@ -18,9 +18,9 @@ func onestar(filename string) string {
 			for i := 0; i < 4; i++ {
 				key := aocutils.Key{Row: position.Row + i*direction.Row, Col: position.Col + i*direction.Col}
 				check += string(grid.Data[key])
-				if check == "XMAS" {
-					count += 1
-				}
+			}
+			if check == "XMAS" {
+				count += 1
 			}
 		}
 	}
