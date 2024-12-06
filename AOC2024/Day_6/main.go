@@ -120,7 +120,6 @@ func twostar(filename string) string {
 	progress := 0
 	for key := range grid.Data {
 		progress += 1
-		fmt.Println(progress, len(grid.Data))
 		if grid.Data[key] == '#' {
 			continue
 		}
@@ -138,7 +137,7 @@ func twostar(filename string) string {
 }
 
 func main() {
-	// aocutils.Timer("1 star", onestar, "input.txt")
+	aocutils.Timer("1 star", onestar, "input.txt")
 	fmt.Println()
 	fmt.Println()
 	aocutils.Timer("2 star", twostar, "input.txt")
