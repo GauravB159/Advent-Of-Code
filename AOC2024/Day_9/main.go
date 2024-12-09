@@ -10,12 +10,11 @@ import (
 func onestar(filename string) string {
 	lines := aocutils.Readfile(filename)
 	disk := make([]string, 0)
-	gif := aocutils.CreateGIF("onestar", 10)
+	gif := aocutils.CreateGIF("onestar", 250)
 	for index, char := range lines[0] {
 		val, _ := strconv.Atoi(string(char))
 		for range val {
 			if index%2 == 1 {
-
 				disk = append(disk, ".")
 			} else {
 
@@ -23,20 +22,16 @@ func onestar(filename string) string {
 			}
 		}
 	}
-	height := 500
-	grid_image := aocutils.CreateImage(height, len(disk), 1, "onestar")
+	width := 310
+	grid_image := aocutils.CreateImage(int(len(disk)/width), width, 4, "onestar")
 	grid_image.UsePaletteColors()
 	for index, val := range disk {
 		if val == "." {
-			for i := range height {
-				grid_image.SetZoomedPixel(index, i, 2)
-			}
+			grid_image.SetZoomedPixel(index%width, int(index/width), 2)
 		} else {
-			for i := range height {
-				grid_image.SetZoomedPixel(index, i, 5)
-			}
+			grid_image.SetZoomedPixel(index%width, int(index/width), 5)
 		}
-		if index%3 == 0 {
+		if index%10 == 0 {
 			gif.AddFrame(grid_image)
 		}
 	}
@@ -48,15 +43,13 @@ func onestar(filename string) string {
 		} else if disk[rptr] == "." {
 			rptr -= 1
 		} else {
-			for i := range height {
-				grid_image.SetZoomedPixel(lptr, i, 5)
-				grid_image.SetZoomedPixel(rptr, i, 2)
-			}
+			grid_image.SetZoomedPixel(lptr%width, int(lptr/width), 5)
+			grid_image.SetZoomedPixel(rptr%width, int(rptr/width), 2)
 			disk[lptr], disk[rptr] = disk[rptr], disk[lptr]
 			gif.AddFrame(grid_image)
 		}
 	}
-	for i := 0; i < 100; i++ {
+	for i := 0; i < 1000; i++ {
 		gif.AddFrame(grid_image)
 	}
 	gif.WriteGIFToFile()
@@ -81,7 +74,7 @@ func twostar(filename string) string {
 	disk := make([]string, 0)
 	freespace := make([]location, 0)
 	files := make([]location, 0)
-	gif := aocutils.CreateGIF("twostar", 10)
+	gif := aocutils.CreateGIF("twostar", 250)
 	for index, char := range lines[0] {
 		val, _ := strconv.Atoi(string(char))
 		location_value := location{
@@ -101,20 +94,16 @@ func twostar(filename string) string {
 			}
 		}
 	}
-	height := 500
-	grid_image := aocutils.CreateImage(height, len(disk), 1, "twostar")
+	width := 310
+	grid_image := aocutils.CreateImage(int(len(disk)/width), width, 4, "twostar")
 	grid_image.UsePaletteColors()
 	for index, val := range disk {
 		if val == "." {
-			for i := range height {
-				grid_image.SetZoomedPixel(index, i, 2)
-			}
+			grid_image.SetZoomedPixel(index%width, int(index/width), 2)
 		} else {
-			for i := range height {
-				grid_image.SetZoomedPixel(index, i, 5)
-			}
+			grid_image.SetZoomedPixel(index%width, int(index/width), 5)
 		}
-		if index%3 == 0 {
+		if index%10 == 0 {
 			gif.AddFrame(grid_image)
 		}
 	}
@@ -124,10 +113,8 @@ func twostar(filename string) string {
 				for i := 0; i < files[index].size; i++ {
 					disk[freespace[free_index].index+i] = strconv.Itoa(index)
 					disk[files[index].index+i] = "."
-					for j := range height {
-						grid_image.SetZoomedPixel(freespace[free_index].index+i, j, 5)
-						grid_image.SetZoomedPixel(files[index].index+i, j, 2)
-					}
+					grid_image.SetZoomedPixel((freespace[free_index].index+i)%width, int((freespace[free_index].index+i)/width), 5)
+					grid_image.SetZoomedPixel((files[index].index+i)%width, int((files[index].index+i)/width), 2)
 					gif.AddFrame(grid_image)
 				}
 				freespace[free_index].size -= files[index].size
@@ -136,7 +123,7 @@ func twostar(filename string) string {
 			}
 		}
 	}
-	for i := 0; i < 100; i++ {
+	for i := 0; i < 1000; i++ {
 		gif.AddFrame(grid_image)
 	}
 	gif.WriteGIFToFile()
