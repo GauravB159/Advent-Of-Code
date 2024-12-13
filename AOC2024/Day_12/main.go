@@ -70,7 +70,6 @@ func edge_dfs(point MidpointKey, direction int, edges *map[MidpointKey]map[int]M
 		3: 0,
 		0: 3,
 	}
-	fmt.Println(point, direction, (*edges)[point])
 	var next_direction int
 	var next_point MidpointKey
 	for key, value := range (*edges)[point] {
