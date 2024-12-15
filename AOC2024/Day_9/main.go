@@ -23,7 +23,7 @@ func onestar(filename string) string {
 		}
 	}
 	width := 310
-	grid_image := aocutils.CreateImage(int(len(disk)/width), width, 4, "onestar")
+	grid_image := aocutils.CreateImage(int(len(disk)/width), width, 4, 4, "onestar")
 	grid_image.UsePaletteColors()
 	for index, val := range disk {
 		if val == "." {
@@ -95,7 +95,7 @@ func twostar(filename string) string {
 		}
 	}
 	width := 310
-	grid_image := aocutils.CreateImage(int(len(disk)/width), width, 4, "twostar")
+	grid_image := aocutils.CreateImage(int(len(disk)/width), width, 4, 4, "twostar")
 	grid_image.UsePaletteColors()
 	for index, val := range disk {
 		if val == "." {

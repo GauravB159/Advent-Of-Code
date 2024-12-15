@@ -39,7 +39,7 @@ func dfs_one(grid aocutils.Grid, node aocutils.Key, level int, finals map[aocuti
 func onestar(filename string) string {
 	lines := aocutils.Readfile(filename)
 	grid := aocutils.CreateGrid(lines)
-	grid_image := aocutils.CreateImage(grid.GetNumRows(), grid.GetNumCols(), 15, "onestar")
+	grid_image := aocutils.CreateImage(grid.GetNumRows(), grid.GetNumCols(), 15, 15, "onestar")
 	grid_image.UsePaletteRedToYellow()
 	gif := aocutils.CreateGIF("onestar", 10)
 	sum := 0

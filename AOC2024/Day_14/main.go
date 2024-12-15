@@ -156,7 +156,7 @@ func twostar(filename string) string {
 			count := 0
 			biggest_connected_components(node, final_grid, &visited, &count)
 			if count > 10 {
-				grid_image := aocutils.CreateImage(height, width, 10, "twostar_frame_"+strconv.Itoa(second))
+				grid_image := aocutils.CreateImage(height, width, 10, 10, "twostar_frame_"+strconv.Itoa(second))
 				grid_image.UsePaletteColors()
 				for node := range final_grid {
 					grid_image.SetZoomedPixel(node.py, node.px, final_grid[node]+1)

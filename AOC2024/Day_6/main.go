@@ -10,7 +10,7 @@ import (
 func onestar(filename string) string {
 	lines := aocutils.Readfile(filename)
 	grid := aocutils.CreateCharacterGrid(lines)
-	grid_image := aocutils.CreateImage(grid.GetNumRows(), grid.GetNumCols(), 10, "onestar")
+	grid_image := aocutils.CreateImage(grid.GetNumRows(), grid.GetNumCols(), 10, 10, "onestar")
 	grid_image.UsePaletteColors()
 	gif := aocutils.CreateGIF("onestar", 40)
 	var start aocutils.Key
@@ -100,7 +100,7 @@ func checkLoop(grid aocutils.Grid, start aocutils.Key, gif *aocutils.GIF, grid_i
 func twostar(filename string) string {
 	lines := aocutils.Readfile(filename)
 	grid := aocutils.CreateCharacterGrid(lines)
-	grid_image := aocutils.CreateImage(grid.GetNumRows(), grid.GetNumCols(), 10, "twostar")
+	grid_image := aocutils.CreateImage(grid.GetNumRows(), grid.GetNumCols(), 10, 10, "twostar")
 	grid_image.UsePaletteColors()
 	gif := aocutils.CreateGIF("twostar", 25)
 	var start aocutils.Key

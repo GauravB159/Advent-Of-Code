@@ -10,7 +10,7 @@ import (
 func onestar(filename string) string {
 	lines := aocutils.Readfile(filename)
 	grid := aocutils.CreateGrid(lines)
-	grid_image := aocutils.CreateImage(grid.Rows, grid.Cols, 40, "onestar")
+	grid_image := aocutils.CreateImage(grid.Rows, grid.Cols, 40, 40, "onestar")
 	grid_image.UsePaletteWideReds(true)
 	total_steps := 100
 	gif := aocutils.CreateGIF("onestar", 5)
@@ -75,7 +75,7 @@ func onestar(filename string) string {
 func twostar(filename string) string {
 	lines := aocutils.Readfile(filename)
 	grid := aocutils.CreateGrid(lines)
-	grid_image := aocutils.CreateImage(grid.Rows, grid.Cols, 40, "twostar")
+	grid_image := aocutils.CreateImage(grid.Rows, grid.Cols, 40, 40, "twostar")
 	grid_image.UsePaletteWideReds(true)
 	gif := aocutils.CreateGIF("twostar", 10)
 	for i, line := range lines {

@@ -11,7 +11,7 @@ func part_one(filename string) string {
 	lines := aocutils.Readfile(filename)
 	grid := aocutils.CreateCharacterGrid(lines)
 	final_count := 0
-	grid_image := aocutils.CreateImage(grid.Rows, grid.Cols, 40, "part_one")
+	grid_image := aocutils.CreateImage(grid.Rows, grid.Cols, 40, 40, "part_one")
 	grid_image.UsePaletteWideReds(true)
 	gif := aocutils.CreateGIF("part_one", 1)
 	for key := range grid.Data {
@@ -59,7 +59,7 @@ func part_two(filename string) string {
 	lines := aocutils.Readfile(filename)
 	grid := aocutils.CreateCharacterGrid(lines)
 	final_count := 0
-	grid_image := aocutils.CreateImage(grid.Rows, grid.Cols, 40, "part_two")
+	grid_image := aocutils.CreateImage(grid.Rows, grid.Cols, 40, 40, "part_two")
 	grid_image.UsePaletteWideReds(true)
 	gif := aocutils.CreateGIF("part_two", 10)
 	for key := range grid.Data {
@@ -107,7 +107,7 @@ func part_three(filename string) string {
 	lines := aocutils.Readfile(filename)
 	grid := aocutils.CreateCharacterGrid(lines)
 	final_count := 0
-	grid_image := aocutils.CreateImage(grid.Rows, grid.Cols, 40, "part_three")
+	grid_image := aocutils.CreateImage(grid.Rows, grid.Cols, 40, 40, "part_three")
 	grid_image.UsePaletteReds(true)
 	gif := aocutils.CreateGIF("part_three", 200)
 	for key := range grid.Data {
