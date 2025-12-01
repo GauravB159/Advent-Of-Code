@@ -41,7 +41,6 @@ func twostar(filename string) string {
 		} else {
 			pointer = pointer - number
 		}
-		before := pointer
 		if pointer < 0 {
 			count += int(math.Abs(float64(pointer))) / 100
 			if beforebefore != 0 {
@@ -54,7 +53,6 @@ func twostar(filename string) string {
 		} else if pointer == 0 {
 			count += 1
 		}
-		fmt.Println(line, before, pointer, count)
 	}
 	return strconv.Itoa(count)
 }
