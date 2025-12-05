@@ -45,7 +45,6 @@ func onestar(filename string) string {
 				}
 			}
 			if count_ < 4 {
-				// fmt.Println(i, j)
 				grid_image.SetZoomedPixel(j, i, 5)
 				sum += 1
 			}
