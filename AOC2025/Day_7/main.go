@@ -62,24 +62,27 @@ func recurse(node aocutils.Key, total int, cache *map[aocutils.Key]int, grid *ao
 		return (*cache)[node]
 	}
 	var new_total int
+
+	// grid_color_map := map[string]int{
+	// 	".": 1,
+	// 	"^": 5,
+	// 	"|": 9,
+	// }
+	// temp := grid.Data[node]
 	if grid.Data[node] == '^' {
 		new_total = total
-		grid_image.SetZoomedPixel(node.Col+1, node.Row, 9)
 		gif.AddFrame(*grid_image)
 		new_total += recurse(aocutils.Key{Row: node.Row, Col: node.Col + 1}, 0, cache, grid, grid_image, gif)
-		grid_image.SetZoomedPixel(node.Col+1, node.Row, 5)
-		grid_image.SetZoomedPixel(node.Col-1, node.Row, 9)
 		gif.AddFrame(*grid_image)
 		new_total += recurse(aocutils.Key{Row: node.Row, Col: node.Col - 1}, 0, cache, grid, grid_image, gif)
-		grid_image.SetZoomedPixel(node.Col-1, node.Row, 5)
 		gif.AddFrame(*grid_image)
 	} else {
-		grid_image.SetZoomedPixel(node.Col, node.Row+1, 5)
+		grid_image.SetZoomedPixel(node.Col, node.Row, 9)
 		gif.AddFrame(*grid_image)
 		new_total += recurse(aocutils.Key{Row: node.Row + 1, Col: node.Col}, 0, cache, grid, grid_image, gif)
-		grid_image.SetZoomedPixel(node.Col, node.Row+1, 1)
 		gif.AddFrame(*grid_image)
 	}
+	grid_image.SetZoomedPixel(node.Col, node.Row, 3)
 	(*cache)[node] = new_total
 	return new_total
 }
