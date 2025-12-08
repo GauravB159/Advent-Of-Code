@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"math/rand"
 	"strconv"
 
 	aocutils "github.com/GauravB159/aoc-go-utils"
@@ -62,20 +63,23 @@ func recurse(node aocutils.Key, total int, cache *map[aocutils.Key]int, grid *ao
 		return (*cache)[node]
 	}
 	var new_total int
-
-	// grid_color_map := map[string]int{
-	// 	".": 1,
-	// 	"^": 5,
-	// 	"|": 9,
-	// }
-	// temp := grid.Data[node]
 	if grid.Data[node] == '^' {
 		new_total = total
-		gif.AddFrame(*grid_image)
-		new_total += recurse(aocutils.Key{Row: node.Row, Col: node.Col + 1}, 0, cache, grid, grid_image, gif)
-		gif.AddFrame(*grid_image)
-		new_total += recurse(aocutils.Key{Row: node.Row, Col: node.Col - 1}, 0, cache, grid, grid_image, gif)
-		gif.AddFrame(*grid_image)
+		random := rand.Float64()
+		if random < 0.5 {
+			gif.AddFrame(*grid_image)
+			new_total += recurse(aocutils.Key{Row: node.Row, Col: node.Col + 1}, 0, cache, grid, grid_image, gif)
+			gif.AddFrame(*grid_image)
+			new_total += recurse(aocutils.Key{Row: node.Row, Col: node.Col - 1}, 0, cache, grid, grid_image, gif)
+			gif.AddFrame(*grid_image)
+		} else {
+			gif.AddFrame(*grid_image)
+			new_total += recurse(aocutils.Key{Row: node.Row, Col: node.Col - 1}, 0, cache, grid, grid_image, gif)
+			gif.AddFrame(*grid_image)
+			new_total += recurse(aocutils.Key{Row: node.Row, Col: node.Col + 1}, 0, cache, grid, grid_image, gif)
+			gif.AddFrame(*grid_image)
+		}
+
 	} else {
 		grid_image.SetZoomedPixel(node.Col, node.Row, 9)
 		gif.AddFrame(*grid_image)
