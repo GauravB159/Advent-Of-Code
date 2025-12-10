@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	aocutils "github.com/GauravB159/aoc-go-utils"
+	"github.com/draffensperger/golp"
 )
 
 type Machine struct {
@@ -60,63 +61,33 @@ func onestar(filename string) string {
 	return strconv.Itoa(result)
 }
 
-func check_arrays_equality(first []int, second []int) int {
-	if len(first) != len(second) {
-		return 1
-	}
-	equal := 0
-	for i := range first {
-		if first[i] < second[i] {
-			equal = -1
-		} else if first[i] > second[i] {
-			equal = 1
-			break
-		}
-	}
-	return equal
-}
-
-func get_key(slice []int) string {
-	result := ""
-	for _, val := range slice {
-		result += strconv.Itoa(val) + ","
-	}
-	return result
-}
-
-func find_answer_two(joltages []int, transformations [][]int, current []int, level int, cache map[string]int) int {
-	key := get_key(current)
-	if value, exists := cache[key]; exists {
-		return value
-	}
-	equality := check_arrays_equality(current, joltages)
-	switch equality {
-	case 1:
-		cache[key] = 1000000
-		return 1000000
-	case 0:
-		cache[key] = 0
-		return 0
-	}
-	min_ := 1000000000
-	for _, transformation := range transformations {
-		temp_current := make([]int, len(current))
-		copy(temp_current, current)
-		for _, num := range transformation {
-			temp_current[num] += 1
-		}
-		result := 1 + find_answer_two(joltages, transformations, temp_current, level+1, cache)
-		if result < min_ {
-			min_ = result
-		}
-	}
-	cache[key] = min_
-	return min_
-}
-
 type NewMachine struct {
 	transformations [][]int
 	joltages        []int
+}
+
+func solveMachine(transformations [][]int, joltages []int) int {
+	lp := golp.NewLP(len(joltages), len(transformations))
+	objective := make([]float64, 0)
+	for i := range len(transformations) {
+		lp.SetInt(i, true)
+		lp.AddConstraintSparse([]golp.Entry{{Col: i, Val: 1.0}}, golp.GE, 0.0)
+		objective = append(objective, 1.0)
+	}
+	for i, joltage := range joltages {
+		constraint := make([]golp.Entry, 0)
+		for j, transformation := range transformations {
+			for _, inner := range transformation {
+				if i == inner {
+					constraint = append(constraint, golp.Entry{Col: j, Val: 1.0})
+				}
+			}
+		}
+		lp.AddConstraintSparse(constraint, golp.EQ, float64(joltage))
+	}
+	lp.SetObjFn(objective)
+	lp.Solve()
+	return int(math.Round(lp.Objective()))
 }
 
 /* Only works for the example, not for the actual input. Too slow, need a solver. */
@@ -144,11 +115,7 @@ func twostar(filename string) string {
 		machines = append(machines, NewMachine{transformations: transformations, joltages: joltages})
 	}
 	for _, machine := range machines {
-		current := make([]int, len(machine.joltages))
-		cache := make(map[string]int)
-		answer := find_answer_two(machine.joltages, machine.transformations, current, 0, cache)
-		fmt.Println(machine, answer)
-		result += answer
+		result += solveMachine(machine.transformations, machine.joltages)
 	}
 	return strconv.Itoa(result)
 }
@@ -156,6 +123,6 @@ func twostar(filename string) string {
 func main() {
 	aocutils.Timer("1 star", onestar, "input.txt")
 	fmt.Println()
-	// fmt.Println()
-	// aocutils.Timer("2 star", twostar, "input.txt")
+	fmt.Println()
+	aocutils.Timer("2 star", twostar, "input.txt")
 }
